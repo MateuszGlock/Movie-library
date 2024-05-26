@@ -381,37 +381,35 @@ const search = document.querySelector('.search-form');
 const cardsList = document.querySelector('ul#cards-list');
 let lastSearchTerm;
 
-search.addEventListener('submit', async ev => {
-  ev.preventDefault();
-  cardsList.innerHTML = ` `;
-  const warning = document.querySelector(`p.warning`);
-  warning.innerText = ``;
-  const searchTerm = ev.currentTarget.elements.searchQuery.value;
-  lastSearchTerm = searchTerm;
-  try {
-    const data = await searchMovies(lastSearchTerm);
-    const dataMovies = data.results;
-    const genresList = await fetchGenresList();
-    if (searchTerm === lastSearchTerm) {
-      if (data.results.length === 0) {
-        warning.innerText = `Search result not successful. Enter the correct movie name and try again.`;
-        paginationButtons.style.display = 'none';
-      } else {
-        createCards(dataMovies, genresList);
-        paginationButtons.style.display = 'none';
+if (search) {
+  search.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    cardsList.innerHTML = ` `;
+    const warning = document.querySelector(`p.warning`);
+    warning.innerText = ``;
+    const searchTerm = ev.currentTarget.elements.searchQuery.value;
+    lastSearchTerm = searchTerm;
+    paginationButtons.style.display = 'none';
+    try {
+      const data = await searchMovies(lastSearchTerm);
+      const dataMovies = data.results;
+      const genresList = await fetchGenresList();
+      if (searchTerm === lastSearchTerm) {
+        if (data.results.length === 0) {
+          warning.innerText = `Search result not successful. Enter the correct movie name and try again.`;
+        } else {
+          createCards(dataMovies, genresList);
+          paginationButtons.style.display = 'none';
+        }
       }
+    } catch (error) {
+      console.error('Wystąpił błąd:', error);
     }
-  } catch (error) {
-    console.error('Wystąpił błąd:', error);
-  }
-});
-
+  });
+}
 // modal -----------------------
 let selectedMovie;
 const modal = document.getElementById('movieModal');
-const closeBtn = document.getElementById('closeBtn');
-const queueBtn = document.getElementById('addToQueueBtn');
-const watchedBtn = document.getElementById('addToWatchedBtn');
 
 // Funkcja do zamykania modala
 function closeModal() {
@@ -446,23 +444,24 @@ function addToWatched(movie) {
 
   saveWatchedToLocalStorage(watched);
 }
+function removeFromWatched(movie) {
+  const watchedJSON = localStorage.getItem('watchedMovies');
+  const watched = JSON.parse(watchedJSON) || [];
 
-// Dodanie event listenera do przycisku "Add to Watched"
-watchedBtn.onclick = function () {
-  addToWatched(selectedMovie);
-  console.log('Film dodany do obejrzanych:', selectedMovie);
-  displayLocalStorageContent();
-};
+  watched.splice(movie);
 
-queueBtn.onclick = function () {
-  addToQueue(selectedMovie);
-  console.log('Film dodany do kolejki:', selectedMovie);
-};
+  saveWatchedToLocalStorage(watched);
+}
+function removeFromQueue(movie) {
+  const watchedJSON = localStorage.getItem('movieQueue');
+  const watched = JSON.parse(watchedJSON) || [];
+
+  watched.splice(movie);
+
+  saveQueueToLocalStorage(watched);
+}
 
 // Zamykanie przy kliknięciu na X
-closeBtn.onclick = function () {
-  closeModal();
-};
 
 // Zamykanie przy kliknięciu poza modalem
 window.onclick = function (event) {
@@ -475,12 +474,10 @@ window.onclick = function (event) {
 document.onkeydown = function (event) {
   if (event.key === 'Escape') {
     closeModal();
-    console.log('dziala?');
   }
 };
 
 document.body.addEventListener('click', async function (event) {
-  console.log('dziala?');
   if (event.target.classList.contains('card-img')) {
     modal.style.display = 'block';
 
@@ -506,7 +503,6 @@ document.body.addEventListener('click', async function (event) {
         .closest('.card')
         .querySelector('.card-text-genre').textContent;
 
-      console.log(genreAndYear);
       const urlSizePoster = getUrlSizePoster(poster);
       const urlW154 = urlSizePoster.find(obj => obj.name === 'w154');
       const urlW185 = urlSizePoster.find(obj => obj.name === 'w185');
@@ -518,7 +514,7 @@ document.body.addEventListener('click', async function (event) {
       let modalDiv = document.querySelector('#movieModal');
 
       modalDiv.innerHTML = `  <div id="modalContent" class="modal-content">
-      <img id="moviePoster"  src="${urlW154.url}"
+      <img id="moviePoster" class = "modal-poster"  src="${urlW154.url}"
       srcset="
         ${urlW185.url} 185w,
         ${urlW342.url} 342w,
@@ -555,29 +551,13 @@ document.body.addEventListener('click', async function (event) {
           <div class="movie-summary"><p>ABOUT</p>
             <p>${overview}</p>
           </div>
-          <button id="addToWatchedBtn" class = "modal-button">ADD TO WATCHED</button>
-          <button id="addToQueueBtn" class = "modal-button">ADD TO QUEUE</button>
+          <div id="modalButtons" class="modal-buttons">
 
+
+</div>
     </div>
     <span id="closeBtn" class="close">&times;</span>`;
-
-      //ustawienie gatunku
-
-      // Przypisz zawartość 'card-text-title' do 'movie-title'
-      document.getElementById('addToWatchedBtn').onclick = function () {
-        addToWatched(selectedMovie);
-        console.log('Film dodany do obejrzanych:', selectedMovie);
-        displayLocalStorageContent();
-      };
-
-      document.getElementById('addToQueueBtn').onclick = function () {
-        addToQueue(selectedMovie);
-        console.log('Film dodany do kolejki:', selectedMovie);
-      };
-
-      document.getElementById('closeBtn').onclick = function () {
-        closeModal();
-      };
+      addButtons(isMovieWatched(id), isMovieQueued(id));
 
       selectedMovie = {
         urlW154: urlW154.url,
@@ -589,9 +569,40 @@ document.body.addEventListener('click', async function (event) {
         movieId: id,
         movieGenreAndYear: genreAndYear,
       };
+      //ustawienie gatunku
+
+      // Przypisz zawartość 'card-text-title' do 'movie-title'
+      document.getElementById('addToWatchedBtn').onclick = function () {
+        addToWatched(selectedMovie);
+        document.getElementById('addToWatchedBtn').disabled = true;
+        document.getElementById('addToWatchedBtn').innerText = 'MOVIE WATCHED!';
+      };
+
+      document.getElementById('addToQueueBtn').onclick = function () {
+        addToQueue(selectedMovie);
+        document.getElementById('addToQueueBtn').disabled = true;
+        document.getElementById('addToQueueBtn').innerText = 'MOVIE QUEUED!';
+      };
+
+      document.getElementById('closeBtn').onclick = function () {
+        closeModal();
+      };
+      document.getElementById('removeFromWatchedBtn').onclick = function () {
+        removeFromWatched(selectedMovie);
+        document.getElementById('removeFromWatchedBtn').disabled = true;
+        document.getElementById('removeFromWatchedBtn').innerText = 'MOVIE FORGOTTEN!';
+      };
+      document.getElementById('removeFromQueueBtn').onclick = function () {
+        removeFromQueue(selectedMovie);
+        document.getElementById('removeFromQueueBtn').disabled = true;
+        document.getElementById('removeFromQueueBtn').innerText = 'MOVIE UNQUEUED!';
+      };
     } catch (error) {
       console.error('Wystąpił błąd podczas pobierania szczegółów filmu:', error);
     }
+    console.log(isMovieWatched(id));
+    console.log(isMovieQueued(id));
+    console.log(selectedMovie);
   }
 });
 
@@ -607,12 +618,67 @@ async function fetchMovieDetails(id) {
     throw error;
   }
 }
-function displayLocalStorageContent() {
-  setTimeout(() => {
-    const movieQueueJSON = localStorage.getItem('movieQueue');
-    const watchedMoviesJSON = localStorage.getItem('watchedMovies');
 
-    console.log('Movie Queue:', JSON.parse(movieQueueJSON));
-    console.log('Watched Movies:', JSON.parse(watchedMoviesJSON));
-  }, 1000); // Opóźnienie wynosi 1 sekundę (1000 milisekund)
+// Funkcja do sprawdzenia czy film o danym id znajduje się w watchedMovies
+function isMovieWatched(movieId_) {
+  // Pobranie danych z LocalStorage
+  const watchedMovies = localStorage.getItem('watchedMovies');
+
+  // Sprawdzenie czy watchedMovies istnieje i nie jest pusty
+  if (watchedMovies) {
+    // Parsowanie JSONa
+
+    const watchedMoviesArray = JSON.parse(watchedMovies);
+    // Szukanie filmu z określonym id
+    console.log(watchedMoviesArray);
+    return watchedMoviesArray.some(movie => movie.movieId === movieId_);
+  }
+
+  // Zwracanie false jeśli watchedMovies nie istnieje lub jest pusty
+  return false;
+}
+
+function isMovieQueued(movieId_) {
+  // Pobranie danych z LocalStorage
+  const movieQueue = localStorage.getItem('movieQueue');
+
+  // Sprawdzenie czy watchedMovies istnieje i nie jest pusty
+  if (movieQueue) {
+    // Parsowanie JSONa
+
+    const movieQueueArray = JSON.parse(movieQueue);
+    // Szukanie filmu z określonym id
+    console.log('movieQueued');
+    return movieQueueArray.some(movie => movie.movieId === movieId_);
+  }
+
+  // Zwracanie false jeśli watchedMovies nie istnieje lub jest pusty
+  return false;
+}
+function addButtons(isWatched, isQueued) {
+  console.log('add buttons');
+  const modalButtons = document.querySelector('#modalButtons');
+  if (isWatched) {
+    if (isQueued) {
+      modalButtons.innerHTML = `
+      <button id="removeFromWatchedBtn" class="modal-button modal-remove-button">REMOVE FROM WATCHED</button>
+      <button id="removeFromQueueBtn" class="modal-button modal-remove-button">REMOVE FROM QUEUE</button>
+      `;
+    } else {
+      modalButtons.innerHTML = `
+      <button id="removeFromWatchedBtn" class="modal-button modal-remove-button">REMOVE FROM WATCHED</button>
+      <button id="addToQueueBtn" class="modal-button">ADD TO QUEUE</button>
+      `;
+    }
+  } else {
+    if (isQueued) {
+      modalButtons.innerHTML = `
+      <button id="addToWatchedBtn" class="modal-button">ADD TO WATCHED</button>
+      <button id="removeFromQueueBtn" class="modal-button modal-remove-button">REMOVE FROM QUEUE</button>`;
+    } else
+      modalButtons.innerHTML = `
+    <button id="addToWatchedBtn" class="modal-button">ADD TO WATCHED</button>
+    <button id="addToQueueBtn" class="modal-button">ADD TO QUEUE</button>
+    `;
+  }
 }

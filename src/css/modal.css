@@ -17,44 +17,34 @@ body {
   /* Ustaw wysokość na 100% ekranu */
   overflow: auto;
   /* Dodaj paski przewijania, jeśli zawartość jest większa niż ekran */
-  background-color: rgba(0,
-      0,
-      0,
-      0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   /* Dodać efekt podmywania: czarny kolor z przezroczystością */
 }
 
 /* Styl dla zawartości modala */
 .modal-content {
-  background-color: #fefefe;
-  /* Tło modala */
-  margin: 15% auto;
-  /*Czy wysokośc od góry powinna być stała, wyznaczona przez px? */
   padding: 48px 20px 40px 20px;
-  display: none;
-  position: relative;
-  width: 280px;
-  /* Ustaw szerokość na 92% */
-  overflow: auto;
-  max-width: 90%;
-  /* Zmniejsz szerokość do 90% szerokości ekranu */
-  max-height: 90vh;
-  /* Ogranicz wysokość do 90% wysokości okna przeglądarki */
-  overflow-y: auto;
   /* Dodaj pionowy pasek przewijania */
+  background-color: #fefefe; /* Tło modala */
+  margin: 0 auto; /* Wyśrodkowanie poziome */
+  position: fixed; /* Zmieniamy z relative na fixed */
+  top: 50%; /* Ustawienie na środku pionowo */
+  left: 50%; /* Ustawienie na środku poziomo */
+  transform: translate(-50%, -50%); /* Przesunięcie na środek */
+  overflow: auto;
+  max-width: 90%; /* Zmniejsz szerokość do 90% szerokości ekranu */
+  max-height: 90vh; /* Ogranicz wysokość do 90% wysokości okna przeglądarki */
+  overflow-y: auto; /* Dodaj pionowy pasek przewijania */
 }
 
-img {
-  width: 240px;
-  /* Ustaw szerokość obrazka */
-  height: 357px;
+.modal-poster {
+  width: 264px;
   border-radius: 5px;
-  /*kurczę coś nie działa ten obrazek, jest przesunięty na lewo :/*/
 }
-
 .movie-title {
   margin: 0px;
   font-size: 20px;
+  color: black;
 }
 
 .modal-desc {
@@ -82,6 +72,7 @@ img {
   margin: 0px;
   margin-left: 80px;
   font-size: 12px;
+  color: black;
 }
 
 .movie-summary {
@@ -89,16 +80,20 @@ img {
   font-weight: bold;
   line-height: 20px;
   margin-top: 20px;
+  color: black;
+  color: black;
 }
 
 .movie-summary p {
   margin: 0px;
   font-weight: 500 bold;
+  color: black;
 }
 
 .movie-summary p:first-child {
   margin-bottom: 8px;
   line-height: 16px;
+  color: black;
 }
 
 /* Styl dla przycisku zamykania */
@@ -120,17 +115,26 @@ img {
   text-decoration: none;
   cursor: pointer;
 }
+.modal-buttons {
+  display: flex;
+}
 
 /* Dodatkowy styl dla przycisków */
 .modal-button {
-  padding: 14px 9px;
+  padding: 6px 27px;
   margin-top: 20px;
-
+  width: 110px;
   cursor: pointer;
   background-color: white;
   border: 1px solid #000;
   border-radius: 5px;
   font-size: 12px;
+}
+.modal-button[disabled] {
+  color: white;
+  cursor: not-allowed; /* Kursor oznaczający brak możliwości kliknięcia */
+  opacity: 1; /* Pełna przezroczystość */
+  background-color: #ff6b01;
 }
 
 .modal-button:first-of-type {
@@ -164,7 +168,7 @@ img {
   font-weight: bold;
   margin-right: 5px;
   /* Dodajemy odstęp między właściwością a wartością */
-  width: 152px;
+  width: 108px;
   font-size: 12px;
   line-height: 16px;
   align-items: center;
@@ -177,6 +181,7 @@ img {
   line-height: 16px;
   font-weight: bold;
   display: flex;
+  color: black;
 }
 
 .first-value {
@@ -214,48 +219,40 @@ img {
     /* Ustaw wysokość na 100% ekranu */
     overflow: auto;
     /* Dodaj paski przewijania, jeśli zawartość jest większa niż ekran */
-    background-color: rgba(0,
-        0,
-        0,
-        0.4);
+    background-color: rgba(0, 0, 0, 0.4);
     /* Dodać efekt podmywania: czarny kolor z przezroczystością */
   }
 
   /* Styl dla zawartości modala */
   .modal-content {
-    background-color: #fefefe;
-    /* Tło modala */
-    margin: 15% auto;
-    /*Czy wysokośc od góry powinna być stała, wyznaczona przez px? */
-    padding: 40px 72px 40px 36px;
-
-    display: flex;
-    position: relative;
+    background-color: #fefefe; /* Tło modala */
+    margin: 0 auto; /* Wyśrodkowanie poziome */
     width: 704px;
-    /* Ustaw szerokość na 92% */
+    display: flex;
+    position: fixed; /* Zmieniamy z relative na fixed */
+    top: 50%; /* Ustawienie na środku pionowo */
+    left: 50%; /* Ustawienie na środku poziomo */
+    transform: translate(-50%, -50%); /* Przesunięcie na środek */
     overflow: auto;
-    max-width: 90%;
-    /* Zmniejsz szerokość do 90% szerokości ekranu */
-    max-height: 90vh;
-    /* Ogranicz wysokość do 90% wysokości okna przeglądarki */
-    overflow-y: auto;
-    /* Dodaj pionowy pasek przewijania */
+    max-width: 90%; /* Zmniejsz szerokość do 90% szerokości ekranu */
+    max-height: 90vh; /* Ogranicz wysokość do 90% wysokości okna przeglądarki */
+    overflow-y: auto; /* Dodaj pionowy pasek przewijania */
   }
 
-  img {
+  .modal-poster {
     width: 264px;
     /* Ustaw szerokość obrazka */
-    height: 373.55px;
+    height: calc(20vw + 195px);
     border-radius: 5px;
   }
 
   .movie-title {
     margin: 0px;
     font-size: 20px;
+    color: black;
   }
-
   .modal-desc {
-    margin-left: 68px;
+    margin-left: calc(17vw - 85px);
     margin-top: 0px;
   }
 
@@ -287,6 +284,7 @@ img {
     font-weight: bold;
     line-height: 20px;
     margin-top: 20px;
+    color: black;
   }
 
   .movie-summary p {
@@ -297,6 +295,7 @@ img {
   .movie-summary p:first-child {
     margin-bottom: 8px;
     line-height: 16px;
+    color: black;
   }
 
   /* Styl dla przycisku zamykania */
@@ -323,7 +322,6 @@ img {
   .modal-button {
     padding: 14px 9px;
     margin-top: 20px;
-
     cursor: pointer;
     background-color: white;
     border: 1px solid #000;
@@ -333,6 +331,10 @@ img {
 
   .modal-button:first-of-type {
     margin-right: 15px;
+    width: 120px;
+  }
+  .modal-button:last-of-type {
+    width: 110px;
   }
 
   .modal-button:hover {
@@ -362,7 +364,7 @@ img {
     font-weight: bold;
     margin-right: 5px;
     /* Dodajemy odstęp między właściwością a wartością */
-    width: 108px;
+    width: 11vw;
     font-size: 12px;
     line-height: 16px;
     align-items: center;
@@ -411,33 +413,26 @@ img {
     /* Ustaw wysokość na 100% ekranu */
     overflow: auto;
     /* Dodaj paski przewijania, jeśli zawartość jest większa niż ekran */
-    background-color: rgba(0,
-        0,
-        0,
-        0.4);
+    background-color: rgba(0, 0, 0, 0.4);
     /* Dodać efekt podmywania: czarny kolor z przezroczystością */
     overflow: hidden;
   }
 
   /* Styl dla zawartości modala */
   .modal-content {
-    background-color: #fefefe;
-    /* Tło modala */
-    margin: 15% auto;
-    /*Czy wysokośc od góry powinna być stała, wyznaczona przez px? */
+    background-color: #fefefe; /* Tło modala */
+    margin: 0 auto; /* Wyśrodkowanie poziome */
     padding: 40px 12px;
-    width: 806px;
-    /* ewentualnie zmienić na procenty?? */
+    width: 806px; /* Ewentualnie zmienić na procenty */
     display: flex;
-    position: relative;
-    top: -25%;
+    position: fixed; /* Zmieniamy z relative na fixed */
+    top: 50%; /* Ustawienie na środku pionowo */
+    left: 50%; /* Ustawienie na środku poziomo */
+    transform: translate(-50%, -50%); /* Przesunięcie na środek */
     overflow: auto;
-    max-width: 90%;
-    /* Zmniejsz szerokość do 90% szerokości ekranu */
-    max-height: 90vh;
-    /* Ogranicz wysokość do 90% wysokości okna przeglądarki */
-    overflow-y: auto;
-    /* Dodaj pionowy pasek przewijania */
+    max-width: 90%; /* Zmniejsz szerokość do 90% szerokości ekranu */
+    max-height: 90vh; /* Ogranicz wysokość do 90% wysokości okna przeglądarki */
+    overflow-y: auto; /* Dodaj pionowy pasek przewijania */
   }
 
   img {
@@ -450,8 +445,8 @@ img {
   .movie-title {
     margin: 0px;
     font-size: 30px;
+    color: black;
   }
-
   .modal-desc {
     margin-left: 16px;
     margin-top: 0px;
@@ -485,11 +480,13 @@ img {
     font-weight: bold;
     line-height: 20px;
     margin-top: 20px;
+    color: black;
   }
 
   .movie-summary p {
     margin: 0px;
     font-weight: 500 bold;
+    color: black;
   }
 
   .movie-summary p:first-child {
@@ -528,13 +525,17 @@ img {
   }
 
   .modal-button:first-of-type {
-    margin-left: 24px;
+    margin-left: 8px;
+    margin-right: 0px;
   }
 
   .modal-button:hover {
     background-color: #ff6b01;
     color: white;
     border: 1px solid #ff6b01;
+  }
+  .modal-remove-button:first-of-type {
+    margin-left: 0px;
   }
 
   .property-list {
