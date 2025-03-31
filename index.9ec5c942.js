@@ -1,0 +1,2 @@
+document.addEventListener("DOMContentLoaded",()=>{let e=document.querySelector("#myModal"),t=document.querySelector("#openModalText"),n=document.querySelector(".close");t.addEventListener("click",t=>{t.preventDefault(),e.style.display="block"}),n.addEventListener("click",()=>{e.style.display="none"}),window.addEventListener("click",t=>{t.target===e&&(e.style.display="none")})});
+//# sourceMappingURL=index.9ec5c942.js.map
